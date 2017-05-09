@@ -28,24 +28,41 @@ class PostContainer extends Component {
             fetching: true
         });
 
-        const info = await Promise.all([
-                service.getPost(postId),
-                service.getComments(postId)
-        ]);
+		try {
+			const info = await Promise.all([
+					service.getPost(postId),
+					service.getComments(postId)
+			]);
 
-        const {title, body} = info[0].data;
-        const comments = info[1].data;
+			const {title, body} = info[0].data;
+			const comments = info[1].data;
 
-        this.setState({
-            postId: postId,
-            post: {
-                title,
-                body
-            },
-            comments: comments,
-            fetching: false
-        });
+			this.setState({
+				postId: postId,
+				post: {
+					title,
+					body
+				},
+				comments: comments,
+				fetching: false
+			});
+		} catch(e) {
+			this.setState({
+				fetching: false
+			});
+			console.log('error occurred', e);
+		}
     }
+
+	handleNavigateClick = (type) => {
+		const postId = this.state.postId;
+
+		if (type === 'NEXT') {
+			this.fetchPostInfo(postId + 1);
+		} else { 
+			this.fetchPostInfo(postId - 1);
+		}
+	}
 
     render() {
         const {postId, fetching, post, comments} = this.state;
@@ -54,7 +71,8 @@ class PostContainer extends Component {
             <PostWrapper>
                 <Navigate
                     postId={postId}
-                    disabled={fetching}></Navigate>
+                    disabled={fetching}
+					onClick={this.handleNavigateClick}></Navigate>
                 <Post
                     title={post.title}
                     body={post.body}
