@@ -87,6 +87,7 @@ class PostContainer extends Component {
                     disabled={fetching}
 					onClick={this.handleNavigateClick}></Navigate>
                 <Post
+                    postId={postId}
                     title={post.title}
                     body={post.body}
                     comments={comments}></Post>
